@@ -1,0 +1,92 @@
+# splat config for Virtual Pro Wrestling 64 (Japan) — SKELETON, pending ROM recon.
+# TODO(rom): fill in once vpw64.z64 is at the repo root:
+#   - sha1 of the ROM (also goes in docs + the launcher's games.cpp)
+#   - end of the fixed segment's code / start of data (jr $ra density scan — recon.py)
+#   - the overlay descriptor table (9-word entries: romStart, romEnd, entry, textStart,
+#     textEnd, dataStart, dataEnd, bssStart, bssEnd). WT/Revenge precedent: TWO overlays
+#     BOTH at one vram slot (WT: 0x80090000); trust the descriptors, not density guesses
+#     (Revenge's "no overlays" misread cost half a day).
+#   - assets bin start after the ucode/data block
+# Expected constants (AKI family standard, verify): fixed segment rom 0x1000 <->
+# vram 0x80000400; entry stub clears bss then jumps to game_main (expect 0x80000460).
+name: Virtual Pro Wrestling 64 (Japan)
+sha1: TODO_ROM_SHA1
+options:
+  basename: vpw64
+  target_path: vpw64.z64
+  elf_path: build/vpw64.elf
+  base_path: .
+  platform: n64
+  compiler: IDO
+
+  asm_path: asm
+  data_path: asm/data
+  ld_script_path: vpw64.ld
+  ld_dependencies: True
+
+  find_file_boundaries: True
+  header_encoding: ASCII
+
+  o_as_suffix: True
+  use_legacy_include_asm: False
+  mips_abi_float_regs: o32
+
+  symbol_addrs_path:
+    - symbol_addrs.txt
+  reloc_addrs_path:
+    - reloc_addrs.txt
+
+  undefined_funcs_auto_path: undefined_funcs_auto.txt
+  undefined_syms_auto_path: undefined_syms_auto.txt
+
+  libultra_symbols: True
+  hardware_regs: True
+
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+
+segments:
+  - name: header
+    type: header
+    start: 0x0
+
+  - name: ipl3
+    type: bin
+    start: 0x40
+
+  - name: entry
+    type: code
+    start: 0x1000
+    vram: 0x80000400
+    subsegments:
+      - [0x1000, hasm]
+
+  - name: main
+    type: code
+    start: 0x1050
+    vram: 0x80000450
+    follows_vram: entry
+    subsegments:
+      - [0x1050, asm]
+      # TODO(recon): [<code end>, data] boundary; watch for IDO cold-code pockets
+      # inside "data" (WM2000 lesson: a fragment mapped as data recompiles EMPTY and
+      # the caller leaks its stack frame — audit j/jal targets landing in data ranges).
+
+  # TODO(recon): overlay segments from the descriptor table, e.g. (WT-style):
+  # - name: ovl_a
+  #   type: code
+  #   start: 0x......      # romStart from descriptor
+  #   vram: 0x........     # textStart (both overlays likely share this slot)
+  #   exclusive_ram_id: ovl_<slot>
+  #   bss_size: 0x....
+  #   subsegments:
+  #     - [0x......, asm]
+  #     - [0x......, data]
+  #     - { type: bss, vram: 0x........ }
+
+  # TODO(recon): assets bin start
+  # - name: assets
+  #   type: bin
+  #   start: 0x......
+
+  - [0x1000000]  # TODO(rom): actual ROM size (WT = 12 MB, 0xC00000; check the dump)
