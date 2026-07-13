@@ -8,11 +8,11 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "FileDescription", "WCW/nWo Revenge: Recompiled"
+            VALUE "FileDescription", "Virtual Pro Wrestling 64: Recompiled"
             VALUE "FileVersion", "0.1.0"
-            VALUE "InternalName", "RevengeRecompiled"
-            VALUE "OriginalFilename", "RevengeRecompiled.exe"
-            VALUE "ProductName", "WCW/nWo Revenge: Recompiled"
+            VALUE "InternalName", "Vpw64Recompiled"
+            VALUE "OriginalFilename", "Vpw64Recompiled.exe"
+            VALUE "ProductName", "Virtual Pro Wrestling 64: Recompiled"
             VALUE "ProductVersion", "0.1.0"
         END
     END

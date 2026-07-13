@@ -44,11 +44,8 @@ file_to_c.exe
 *.v64
 vpw64.z64
 
-# Runtime libraries: BOOTSTRAP SNAPSHOT of the jessetbh fork wcw branches, copied
-# from Wm2kRecomp's lib/ snapshot (which came from WcwRevengeRecomp's checkouts;
-# pins + the [wcw2k] delta recorded in CLAUDE.md / lib-patches/).
-# Convert to proper submodules before any publication (WT's playbook).
-lib/
+# (lib/ is proper submodules of the jessetbh fork wcw branches since 2026-07-12 —
+# the bootstrap snapshot era is over; [wcw2k] set lives on the forks.)
 
 # Disassembly project — generated/large; keep configs + symbol files only
 disasm/.venv/
