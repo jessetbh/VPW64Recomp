@@ -107,6 +107,12 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon_bytes.c ${CMAKE_CURRE
     DEPENDS ${CMAKE_SOURCE_DIR}/icons/app.png file_to_c
 )
 target_sources(Vpw64Recompiled PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/icon_bytes.c)
+# Game title wordmark shown on the recompui launcher menu (WT's pattern).
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/logo_bytes.c ${CMAKE_CURRENT_BINARY_DIR}/logo_bytes.h
+    COMMAND file_to_c ${CMAKE_SOURCE_DIR}/icons/logo.png logo_bytes ${CMAKE_CURRENT_BINARY_DIR}/logo_bytes.c ${CMAKE_CURRENT_BINARY_DIR}/logo_bytes.h
+    DEPENDS ${CMAKE_SOURCE_DIR}/icons/logo.png file_to_c
+)
+target_sources(Vpw64Recompiled PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/logo_bytes.c)
 if (WIN32)
     enable_language(RC)
     target_sources(Vpw64Recompiled PRIVATE ${CMAKE_SOURCE_DIR}/icons/app.rc)
