@@ -1,15 +1,12 @@
-# RSPRecomp config for VPW64's AUDIO microcode — SKELETON, pending ROM recon.
-# VPW64 is WT's 1997 sibling: expect WT's STOCK aspMain ucode (byte-identical to
-# BMHero's), NOT the newer AKI revision Revenge/WM2000 ship. Recon step: search
-# vpw64.z64 for WT's ucode text bytes (WT: ROM 0x2A850, size 0xE20 — see
-# ..\WcwNwoWorldTour\rsp\wcw_audio.toml and rsp/README.md there). If it matches,
-# everything below transfers verbatim except text_offset; if not, fall back to
-# Revenge's newer-ucode method (..\WcwRevengeRecomp\rsp\README.md, incl. the
-# 12-bit-PC jump-table gotcha).
+# RSPRecomp config for VPW64's AUDIO microcode. Recon 2026-07-12 (vpw_recon.py):
+# WT's STOCK aspMain (byte-identical to BMHero's) found BYTE-IDENTICAL in
+# vpw64.z64 at ROM 0x2B410, full 0xE20 bytes — the expected sibling case, so
+# everything from WT's wcw_audio.toml transfers verbatim except text_offset.
+# rspboot text precedes it at 0x2B340; gfx ucode text follows (RT64's job, not ours).
 # text_address 0x04001080 = where rspboot places task ucode in IMEM (all sisters).
 # Run from repo root:  .\RSPRecomp.exe rsp\vpw64_audio.toml  (paths relative to rsp/).
-text_offset = 0x0        # TODO(recon): ROM offset of the audio ucode text
-text_size = 0xE20        # WT's aspMain size; verify against the gfx-ucode start
+text_offset = 0x2B410
+text_size = 0xE20
 text_address = 0x04001080
 rom_file_path = "../vpw64.z64"
 output_file_path = "vpw64_audio.cpp"

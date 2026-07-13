@@ -29,10 +29,74 @@ OUT = ROOT / "syms" / "dump.toml"
 
 RENAME = {
     # host-collision rename, same as WT/Revenge/WM2000 (splat leaves the entry
-    # target unnamed; the entry stub at rom 0x1000 jr's to it — find game_main's
-    # address during recon, expected 0x80000460 per the AKI family pattern):
+    # target unnamed; the entry stub at rom 0x1000 jr's to it at 0x80000450 —
+    # confirmed by entry-stub decode, vpw_recon.py 2026-07-12):
     "main": "game_main",
-    # TODO(recon): fill from WT fingerprint transfer + crash-loop identification.
+    "func_80000450": "game_main",
+
+    # --- WT fingerprint transfer, 2026-07-12 (vpw_recon2.py): masked full-body
+    #     match of WT's named set, 47/52 unique — the family's best transfer, as
+    #     the same-generation sibling prediction said. Evidence per function:
+    #     WT's disasm/libultra.md. Naming a function makes N64Recomp auto-ignore
+    #     it (built-in set in N64Recomp/src/symbol_lists.cpp) so the runtime
+    #     provides it; game-structure names (ovl_*) are documentation.
+    "func_8000075C": "ovl_load_sections",
+    "func_800007C8": "ovl_load_and_enter",
+    "func_800117C4": "ovl_swap_loop",
+    "func_80011960": "osInitialize",
+    "func_80011BF0": "osCreateThread",
+    "func_80011D40": "osStartThread",
+    "func_80011E90": "osCreatePiManager",
+    "func_80012020": "osCartRomInit",
+    "func_80012170": "osCreateMesgQueue",
+    "func_800121A0": "osSetThreadPri",
+    "func_800122B0": "osSendMesg",
+    "func_80012400": "osInvalDCache",
+    "func_800124B0": "osEPiStartDma",
+    "func_80012590": "osRecvMesg",
+    "func_800126D0": "osInvalICache",
+    "func_800127F0": "__osDisableInt",
+    "func_80012810": "__osRestoreInt",
+    "func_80012830": "osCreateViManager",
+    "func_80012B90": "osViSetMode",
+    "func_80012C00": "osViBlack",
+    "func_80012C70": "osSetEventMesg",
+    "func_80012CE0": "osViSetEvent",
+    "func_80012D50": "osSetIntMask",
+    "func_80012DF0": "osSpTaskYielded",
+    "func_80012F40": "osWritebackDCacheAll",
+    "func_8001308C": "osSpTaskLoad",
+    "func_8001321C": "osSpTaskStartGo",
+    "func_80013260": "osDpSetNextBuffer",
+    "func_80013310": "osSpTaskYield",
+    "func_80013640": "osViSetSpecialFeatures",
+    "func_80013DD0": "__d_to_ll",
+    "func_80013DEC": "__f_to_ll",
+    "func_80013E08": "__d_to_ull",
+    "func_80013EA8": "__f_to_ull",
+    "func_80013F44": "__ll_to_d",
+    "func_80013F5C": "__ll_to_f",
+    "func_80013F74": "__ull_to_d",
+    "func_80013FA8": "__ull_to_f",
+    "func_80014290": "osVirtualToPhysical",
+    "func_80014310": "osWritebackDCache",
+    "func_80014430": "osAiSetFrequency",
+    "func_800171D0": "osAiSetNextBuffer",
+    "func_80017970": "osContInit",
+    "func_8001E170": "osGetThreadPri",
+    "func_80024030": "osGetTime",
+    "func_80025AF0": "__osSiDeviceBusy",  # of 3 shape-matches, the lui 0xA480 /
+        # lw 0x18 / andi 3 one = SI_STATUS (vpw_recon3.py; others are SP/DP variants)
+    "func_800241A0": "__osSiRawStartDma",
+    # Vi getter pair: adjacent 0x40-apart, WT's source order (Current first) —
+    # 0x12E70 loads field +0x40, 0x12EB0 loads +0x44 (vpw_recon3.py):
+    "func_80012E70": "osViGetCurrentFramebuffer",
+    "func_80012EB0": "osViGetNextFramebuffer",
+    # Tiny leaves, byte-exact unique match of WT's full body (no relocs at that size):
+    "func_80017280": "osAiGetLength",
+    "func_8001F360": "osGetCount",
+    # Vi swap: fingerprint-matched:
+    "func_80012EF0": "osViSwapBuffer",
 }
 
 # Extra function entry points injected into dump.toml that splat cannot express:
@@ -63,10 +127,10 @@ INSN_RE = re.compile(r"^\s*/\* ([0-9A-Fa-f]+) ([0-9A-Fa-f]{8}) ([0-9A-Fa-f]{8}) 
 
 SECTION_NAMES = {
     "1000.s": "entry",
-    # TODO(recon): add the overlay asm filenames once disasm/vpw64.yaml has the real
-    # overlay bounds (rom start in hex + ".s", e.g. WM2000 had "4C160.s": "ovl_a").
-    # WT/Revenge precedent: TWO overlays sharing ONE vram slot; find the 9-word
-    # descriptor table (romStart..bssEnd) in the fixed segment's data.
+    # Overlays per the descriptor table at rom 0x3FAC0/0x3FAE4 (disasm/vpw64.yaml):
+    # two overlays sharing vram slot 0x80088000.
+    "F1AF80.s": "ovl_a",
+    "F6D170.s": "ovl_b",
 }
 
 def parse_file(path):

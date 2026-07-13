@@ -1,16 +1,15 @@
-# splat config for Virtual Pro Wrestling 64 (Japan) — SKELETON, pending ROM recon.
-# TODO(rom): fill in once vpw64.z64 is at the repo root:
-#   - sha1 of the ROM (also goes in docs + the launcher's games.cpp)
-#   - end of the fixed segment's code / start of data (jr $ra density scan — recon.py)
-#   - the overlay descriptor table (9-word entries: romStart, romEnd, entry, textStart,
-#     textEnd, dataStart, dataEnd, bssStart, bssEnd). WT/Revenge precedent: TWO overlays
-#     BOTH at one vram slot (WT: 0x80090000); trust the descriptors, not density guesses
-#     (Revenge's "no overlays" misread cost half a day).
-#   - assets bin start after the ucode/data block
-# Expected constants (AKI family standard, verify): fixed segment rom 0x1000 <->
-# vram 0x80000400; entry stub clears bss then jumps to game_main (expect 0x80000460).
+# splat config for Virtual Pro Wrestling 64 (Japan) — recon 2026-07-12 (vpw_recon*.py):
+#   - entry stub (rom 0x1000): clears bss 0x8004A060 +0x28C60, sp 0x8004C210,
+#     jumps to game_main 0x80000450 (= rom 0x1050, same as WT)
+#   - fixed-segment code ends 0x2B338 (last jr $ra 0x2B330); rspboot text begins
+#     0x2B340, audio ucode (WT's stock aspMain, BYTE-IDENTICAL) at 0x2B410 +0xE20,
+#     gfx ucode follows — whole ucode block identical to WT's for 0x3641 bytes.
+#     No jr $ra anywhere 0x2F000..0x4AC60 -> data subsegment starts 0x2B340.
+#   - overlay descriptor table at rom 0x3FAC0/0x3FAE4 (vram 0x8003EEC0/0x8003EEE4),
+#     WT's exact architecture: TWO overlays, ONE shared vram slot 0x80088000
+#     (WT's was 0x80090000). Bounds below are byte-exact from the descriptors.
 name: Virtual Pro Wrestling 64 (Japan)
-sha1: TODO_ROM_SHA1
+sha1: f9e9fa2ed819c3a39db5cb6afeca186f021db5ed
 options:
   basename: vpw64
   target_path: vpw64.z64
@@ -25,7 +24,8 @@ options:
   ld_dependencies: True
 
   find_file_boundaries: True
-  header_encoding: ASCII
+  # JP ROM: internal name is half-width katakana (single-byte Shift-JIS range)
+  header_encoding: shift_jis
 
   o_as_suffix: True
   use_legacy_include_asm: False
@@ -66,27 +66,47 @@ segments:
     start: 0x1050
     vram: 0x80000450
     follows_vram: entry
+    bss_size: 0x28C60
     subsegments:
       - [0x1050, asm]
-      # TODO(recon): [<code end>, data] boundary; watch for IDO cold-code pockets
-      # inside "data" (WM2000 lesson: a fragment mapped as data recompiles EMPTY and
-      # the caller leaks its stack frame — audit j/jal targets landing in data ranges).
+      - [0x2B340, data]
+      - { type: bss, vram: 0x8004A060 }
 
-  # TODO(recon): overlay segments from the descriptor table, e.g. (WT-style):
-  # - name: ovl_a
-  #   type: code
-  #   start: 0x......      # romStart from descriptor
-  #   vram: 0x........     # textStart (both overlays likely share this slot)
-  #   exclusive_ram_id: ovl_<slot>
-  #   bss_size: 0x....
-  #   subsegments:
-  #     - [0x......, asm]
-  #     - [0x......, data]
-  #     - { type: bss, vram: 0x........ }
+  # ~15 MB of assets between the fixed segment and the overlay region at the ROM
+  # tail. No CPU code here (jr-ra density scan, vpw_recon.py).
+  - name: assets
+    type: bin
+    start: 0x4AC60
+    follows_vram: main
 
-  # TODO(recon): assets bin start
-  # - name: assets
-  #   type: bin
-  #   start: 0x......
+  # Two CPU overlays, BOTH loaded to vram 0x80088000 (mutually-exclusive swap, WT's
+  # exact scheme). Section boundaries byte-exact from the 9-word descriptors at
+  # rom 0x3FAC0 / 0x3FAE4 (vram 0x8003EEC0 / 0x8003EEE4).
+  - name: ovl_a
+    type: code
+    start: 0xF1AF80
+    vram: 0x80088000
+    exclusive_ram_id: ovl_88000
+    bss_size: 0x1CCF0
+    subsegments:
+      - [0xF1AF80, asm]
+      - [0xF55240, data]
+      - { type: bss, vram: 0x800DA1F0 }
 
-  - [0x1000000]  # TODO(rom): actual ROM size (WT = 12 MB, 0xC00000; check the dump)
+  - name: ovl_b
+    type: code
+    start: 0xF6D170
+    vram: 0x80088000
+    exclusive_ram_id: ovl_88000
+    bss_size: 0xEF00
+    subsegments:
+      - [0xF6D170, asm]
+      - [0xFCD4D0, data]
+      - { type: bss, vram: 0x800EC2C0 }
+
+  # Tail: remaining assets/padding after the overlay region.
+  - name: assets_tail
+    type: bin
+    start: 0xFD1430
+
+  - [0x1000000]  # ROM size confirmed: 16 MB exactly (vs WT's 12 MB)

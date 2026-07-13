@@ -636,12 +636,10 @@ int main(int argc, char** argv) {
     wcw_ai_accurate_freq = true;
 
     recomp::GameEntry game{};
-    // TODO(rom): set to XXH3_64bits of the real Virtual Pro Wrestling 64 (J) ROM once
-    // vpw64.z64 is in hand (docs/bringup-plan.md step 0). 0 = placeholder; ROM
-    // validation rejects everything until it is set.
-    game.rom_hash = 0x0ULL;
-    // TODO(rom): exact 20-byte header name from ROM offset 0x20 (space-padded).
-    game.internal_name = "VIRTUAL PRO WRESTLING";
+    game.rom_hash = 0x52EDA28CB71A0106ULL;           // XXH3_64bits of the NTSC-J ROM
+    // Exact 20-byte header name from ROM offset 0x20: half-width katakana
+    // "ﾊﾞｰﾁｬﾙ ﾌﾟﾛﾚｽﾘﾝｸﾞ 64 " (Shift-JIS single-byte kana, trailing space).
+    game.internal_name = "\xCA\xDE\xB0\xC1\xAC\xD9 \xCC\xDF\xDB\xDA\xBD\xD8\xDD\xB8\xDE 64 ";
     game.display_name = "Virtual Pro Wrestling 64";
     game.game_id = u8"vpw.vpw64.jp";
     game.mod_game_id = "vpw64";
@@ -750,7 +748,9 @@ int main(int argc, char** argv) {
     // inside recomp::start, revalidates the stored copy). WCW_AUTOBOOT=<path|1> bypasses
     // the launcher for dev iteration (tools/cycle.ps1, capture scripts): loads the given
     // ROM path ("1" = wcw.z64 in the working dir) and boots immediately.
-    std::u8string game_id = u8"wwf.vpw64.us";
+    // Must match the registered GameEntry's game_id above — select_rom looks the
+    // entry up by this id and silently OtherErrors on a mismatch (boot1 lesson).
+    std::u8string game_id = u8"vpw.vpw64.jp";
     const char* autoboot = getenv("WCW_AUTOBOOT");
     if (autoboot != nullptr) {
         std::filesystem::path autoboot_rom = (autoboot[0] != '\0' && strcmp(autoboot, "1") != 0)
