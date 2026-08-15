@@ -5,11 +5,18 @@ sibling, so WT is the primary comparison target: entry-stub decode, jr-$ra
 density code regions, sister-ROM similarity, the 9-word overlay-descriptor
 scan, and the WT aspMain audio-ucode byte search (WT rom 0x2A850, 0xE20).
 """
-import struct
+import os, struct
 
-VPW = r"C:\Users\selki\depot\Vpw64Recomp\vpw64.z64"
-WT  = r"C:\Users\selki\depot\WcwNwoWorldTour\wcw.z64"
-REV = r"C:\Users\selki\depot\WcwRevengeRecomp\revenge.z64"
+# Resolve ROMs relative to this script (workspace root = ../..) so no absolute
+# machine paths live in git; sibling repos sit alongside this one.
+_WS = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+
+def _sib(*parts):
+    return os.path.join(_WS, *parts)
+
+VPW = _sib("Vpw64Recomp", "vpw64.z64")
+WT  = _sib("WcwNwoWorldTour", "wcw.z64")
+REV = _sib("WcwRevengeRecomp", "revenge.z64")
 
 vp = open(VPW, "rb").read()
 wt = open(WT, "rb").read()

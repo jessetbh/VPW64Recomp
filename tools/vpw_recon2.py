@@ -8,11 +8,18 @@ Fingerprint method: mask address-bearing fields (16-bit immediates of I-type
 ALU/loads/stores, 26-bit j/jal targets), keep everything else. Match each named
 WT function's full masked body against VPW64's fixed-segment code.
 """
-import re, struct
+import os, re, struct
 
-VPW = r"C:\Users\selki\depot\Vpw64Recomp\vpw64.z64"
-WT  = r"C:\Users\selki\depot\WcwNwoWorldTour\wcw.z64"
-WT_DUMP = r"C:\Users\selki\depot\WcwNwoWorldTour\WCWSyms\dump.toml"
+# Resolve ROMs/symbols relative to this script (workspace root = ../..) so no
+# absolute machine paths live in git; sibling repos sit alongside this one.
+_WS = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+
+def _sib(*parts):
+    return os.path.join(_WS, *parts)
+
+VPW = _sib("Vpw64Recomp", "vpw64.z64")
+WT  = _sib("WcwNwoWorldTour", "wcw.z64")
+WT_DUMP = _sib("WcwNwoWorldTour", "WCWSyms", "dump.toml")
 
 vp = open(VPW, "rb").read()
 wt = open(WT, "rb").read()

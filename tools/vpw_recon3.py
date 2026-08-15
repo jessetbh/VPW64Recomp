@@ -5,10 +5,17 @@ lui 0xA480=SI, 0xA460=PI, 0xA404=SP, 0xA410=DP), and settle the
 osViGetCurrentFramebuffer/osViGetNextFramebuffer adjacency using WT's order.
 Adapted from Wm2k's tools/recon3.py.
 """
-import re, struct
+import os, re, struct
 
-VPW = r"C:\Users\selki\depot\Vpw64Recomp\vpw64.z64"
-WT_DUMP = r"C:\Users\selki\depot\WcwNwoWorldTour\WCWSyms\dump.toml"
+# Resolve ROMs/symbols relative to this script (workspace root = ../..) so no
+# absolute machine paths live in git; sibling repos sit alongside this one.
+_WS = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+
+def _sib(*parts):
+    return os.path.join(_WS, *parts)
+
+VPW = _sib("Vpw64Recomp", "vpw64.z64")
+WT_DUMP = _sib("WcwNwoWorldTour", "WCWSyms", "dump.toml")
 
 vp = open(VPW, "rb").read()
 
