@@ -88,6 +88,15 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           ./RSPRecomp.exe rsp/vpw64_audio.toml
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Post-regen fixup pipeline (see BUILDING.md)
+        run: |
+          python tools/fix_stumps.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/fix_jraddend.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # Ray tracing camera hand-off (without it RT silently does nothing).
+          python tools/readd_hand_edits.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build Vpw64Recompiled
         run: |
           $cpuCores = (Get-CimInstance -ClassName Win32_Processor).NumberOfLogicalProcessors
