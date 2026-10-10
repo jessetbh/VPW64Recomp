@@ -38,6 +38,7 @@ sharing their runtime stack and conventions.
 * [Planned Features](#planned-features)
 * [FAQ](#faq)
 * [Known Issues](#known-issues)
+* [Mods and ROM Hacks](#mods-and-rom-hacks)
 * [Building](#building)
 * [Libraries Used and Projects Referenced](#libraries-used-and-projects-referenced)
 * [Special Thanks](#special-thanks)
@@ -126,8 +127,9 @@ Yes. Virtual Pro Wrestling 64 was only released in Japan, and this port renders 
 game exactly as it shipped — menus and wrestler names are in Japanese. (The menus are
 straightforward to navigate even without Japanese; the port's own config menus are in
 English.) A community English translation patch exists for the original ROM; patched
-ROMs are **not** accepted by this port today — translation support is a mod-support
-topic, planned.
+ROMs are **not** accepted as the game ROM, but a translation may run as a patch mod on
+top of the clean ROM if it only edits code in place (untested so far): see
+[Mods and ROM Hacks](#mods-and-rom-hacks).
 
 #### Where is the savefile stored?
 
@@ -166,6 +168,47 @@ ROM** again.
 * Overlays such as MSI Afterburner and other software such as Wallpaper Engine can
   cause performance issues that prevent the game from rendering correctly. Disabling
   such software is recommended.
+
+## Mods and ROM Hacks
+
+This port loads mods in the `.nrm` format used by the N64: Recompiled projects.
+
+#### Installing a mod
+
+Copy the `.nrm` file into the game's mods folder and start the game:
+
+- Windows: `%LOCALAPPDATA%\Vpw64Recompiled\mods\` (or `mods\` next to the executable in portable mode)
+
+New mods are switched on by default. Builds with the in-game **Mods** menu (Settings → Mods)
+can also install mods there (**Install Mods**, or drag the file onto the window) and switch
+them on and off. Mods are applied when the game starts, so restart after changing them. To
+remove a mod, delete its file.
+
+#### ROM hacks as patch mods
+
+A ROM hack can run as a *patch mod*: a mod that holds only a patch against the stock ROM. The
+game applies it to your own ROM when it starts, and any game code the hack changes is
+recompiled on the fly. It works for hacks that:
+
+- are built on the same ROM this port uses (see the ROM's SHA1 above), and
+- change code only inside the game's existing functions (data changes of any size are fine).
+
+Hacks that rebuild or move the game's code, or are made for another revision, need a full
+recompile and can't run as patch mods. Only one patch mod can be on at a time; each one keeps
+its own saves in `saves\<mod id>\`, apart from the stock game's.
+
+To make one from a hack ROM you have patched yourself (both ROMs must be big-endian `.z64`):
+
+```
+python tools\romhack\make_patch_mod.py --base vpw64.z64 --hack my_hack.z64 --game-id vpw64 --id my_hack --name "My Hack" --out my_hack.nrm
+```
+
+Run it from a checkout of this repository after building. It reports what the hack changes
+and refuses hacks that need a full recompile; see [tools/romhack/README.md](tools/romhack/README.md).
+Patch mods can contain the hack's and the original game's data, so **don't share patch mods
+you don't have the rights to**: make your own from your own ROMs.
+
+No ROM hacks for Virtual Pro Wrestling 64 have been tested yet; the tool's report will tell you whether one can work.
 
 ## Building
 
