@@ -136,7 +136,11 @@ python tools\gen_stubs.py                  # refresh the stub block in vpw64.tom
 
 After any regeneration, rerun the recompiler (or `python tools\recomp_loop.py`,
 which auto-handles IDO shared-tail split errors) and then
-`python tools\fix_stumps.py`.
+`python tools\fix_stumps.py`, `python tools\fix_jraddend.py` (repairs jump tables
+whose index N64Recomp const-folded to 0; ported from No Mercy, where it made
+championship wins record as losses; the current output has no such sites, so it
+guards future regenerations) and `python tools\readd_hand_edits.py` (ray tracing
+camera hand-off).
 
 ## 8. Changing anything under `lib/`
 
