@@ -109,8 +109,19 @@
             "glows": [[0, 60, -600, 1.2, 700, 1.0, 0.7, 0.4], [0, 60, 600, 1.2, 700, 1.0, 0.7, 0.4]]
         },
         {
+            // WCW: the TV arena with white light panels on the floor around the ring. Cool white key + four corner lamps over
+            // the ring; cool blue glows from the floor panels on all four sides. (World Tour's WCW theme, same rig)
             "name": "WCW",
-            "match": ["C55E6DCACDED7FCE", "3BCF37735ED18BA3", "989B237626A749CB", "6F656F1357129A62"]
+            "match": ["C55E6DCACDED7FCE", "3BCF37735ED18BA3", "989B237626A749CB", "6F656F1357129A62"],
+            "lights": [[0, 1000, 0, 3], [-380, 950, -380, 1], [380, 950, -380, 1], [-380, 950, 380, 1], [380, 950, 380, 1]],
+            "size": 30,
+            "radius": 650,
+            "shadow": 0.65,
+            "characterShadow": 0.4,
+            "color": [0.92, 0.95, 1.0],
+            "outsideDarkness": 0.5,
+            "outsideEdge": 500,
+            "glows": [[0, 40, -700, 1.6, 700, 0.6, 0.8, 1.0], [0, 40, 700, 1.6, 700, 0.6, 0.8, 1.0], [-700, 40, 0, 1.6, 700, 0.6, 0.8, 1.0], [700, 40, 0, 1.6, 700, 0.6, 0.8, 1.0]]
         },
         {
             "name": "NWO",
