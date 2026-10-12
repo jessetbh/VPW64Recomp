@@ -60,9 +60,21 @@
             "glows": [[0, 30, -650, 1.6, 650, 1.0, 0.45, 0.2], [0, 30, 650, 1.6, 650, 1.0, 0.45, 0.2], [-650, 30, 0, 1.6, 650, 0.25, 0.5, 1.0], [650, 30, 0, 1.6, 650, 0.25, 0.5, 1.0]]
         },
         {
+            // WOU: a theatre-style hall (curtains, balcony boxes) around a yellow ring. Warm tungsten lamps, lighter hall (0.4),
+            // warm glows on the apron. The curtains and blue floor panels are not traced geometry: probed with bright test
+            // glows, nothing lights them.
             "name": "WOU",
             "match": ["82C90DAC86CB9B3D", "04AEBDCDC44CD82B", "A7CEF7F750EB6C16", "76F4685583A6870B", "617F3D18B70D0A71",
-                      "7507A89C61A06D88"]
+                      "7507A89C61A06D88"],
+            "lights": [[0, 900, 0, 3], [-420, 850, -420, 1], [420, 850, -420, 1], [-420, 850, 420, 1], [420, 850, 420, 1]],
+            "size": 30,
+            "radius": 650,
+            "shadow": 0.7,
+            "characterShadow": 0.45,
+            "color": [1.0, 0.9, 0.75],
+            "outsideDarkness": 0.4,
+            "outsideEdge": 600,
+            "glows": [[0, 150, -520, 2.4, 500, 1.0, 0.78, 0.45], [0, 150, 520, 2.4, 500, 1.0, 0.78, 0.45]]
         },
         {
             "name": "DAW",
