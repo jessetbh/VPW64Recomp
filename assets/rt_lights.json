@@ -28,9 +28,20 @@
     },
     "venues": [
         {
+            // NSW: teal ring in the dark arena, blue light panels in the floor, star spot lamps in the roof. Cold white key
+            // + corner lamps, darker arena, blue floor-panel glows.
             "name": "NSW",
             "match": ["356AF0D30845FC05", "2A42C749E9609C97", "DD6DC9F44DBE3AEF", "200A619A84B02F52", "F1D91A5990854057",
-                      "5D00CE015DE2B948"]
+                      "5D00CE015DE2B948"],
+            "lights": [[0, 1000, 0, 3], [-380, 950, -380, 1], [380, 950, -380, 1], [-380, 950, 380, 1], [380, 950, 380, 1]],
+            "size": 30,
+            "radius": 600,
+            "shadow": 0.7,
+            "characterShadow": 0.45,
+            "color": [0.9, 0.95, 1.0],
+            "outsideDarkness": 0.6,
+            "outsideEdge": 450,
+            "glows": [[0, 30, -650, 2.2, 650, 0.25, 0.5, 1.0], [0, 30, 650, 2.2, 650, 0.25, 0.5, 1.0], [-650, 30, 0, 2.2, 650, 0.25, 0.5, 1.0], [650, 30, 0, 2.2, 650, 0.25, 0.5, 1.0]]
         },
         {
             "name": "EWF",
