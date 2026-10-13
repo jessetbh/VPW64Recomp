@@ -1,0 +1,19 @@
+{
+  "$schema": "https://recomp.fyi/schema/v1.json",
+  "game": "Virtual Pro Wrestling 64",
+  "project": "Virtual Pro Wrestling 64: Recompiled",
+  "system": "N64",
+  "type": "recomp",
+  "status": "released",
+  "targets": [
+    "Windows"
+  ],
+  "toolchain": [
+    "N64Recomp",
+    "RT64"
+  ],
+  "original": {
+    "region": "Japan",
+    "sha1": "f9e9fa2ed819c3a39db5cb6afeca186f021db5ed"
+  }
+}
