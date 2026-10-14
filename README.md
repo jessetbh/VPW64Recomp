@@ -157,10 +157,32 @@ its sister project World Tour by machine-code fingerprinting.
 Yes. Virtual Pro Wrestling 64 was only released in Japan, and this port renders the
 game exactly as it shipped — menus and wrestler names are in Japanese. (The menus are
 straightforward to navigate even without Japanese; the port's own config menus are in
-English.) A community English translation patch exists for the original ROM; patched
-ROMs are **not** accepted as the game ROM, but a translation may run as a patch mod on
-top of the clean ROM if it only edits code in place (untested so far): see
-[Mods and ROM Hacks](#mods-and-rom-hacks).
+English.) Patched ROMs are **not** accepted as the game ROM, but a community English
+translation can run as a patch mod on top of the clean ROM: see the next question.
+
+#### Can I play it in English?
+
+Maybe, with a community English translation installed as a *patch mod*. The port runs the
+original Japanese game and never ships translation patches or ROMs, so you make the mod
+yourself from your own ROM:
+
+1. **Keep your clean ROM** as the game ROM (the one in
+   [How do I choose a different ROM?](#how-do-i-choose-a-different-rom)). Don't replace it with a
+   patched ROM: the game won't accept it.
+2. **Patch a copy.** Apply the translation's published patch (`.bps`, `.ips`, `.xdelta`,
+   from its authors) to a *copy* of your clean ROM with the patcher its release names.
+   If you already have a patched ROM, use that.
+3. **Make the patch mod** from the patched copy with `make_patch_mod.py`, and install the
+   `.nrm` from the Mods menu: see [ROM hacks as patch mods](#rom-hacks-as-patch-mods).
+
+Only one patch mod can be on at a time; turn it off in the Mods menu to play the original
+again. Each patch mod keeps its own saves.
+
+No VPW64 translation has been tested as a patch mod yet. The known one is Star Trinket's
+English v1.77 beta. If `make_patch_mod.py` writes a mod from it, it should work; if the tool
+refuses (the translation adds or moves code), it needs a full recompile instead. Players
+report random freezes after matches with that beta on other platforms, so a freeze there may
+come from the translation, not the port. If you try it, please report what happened.
 
 #### Where is the savefile stored?
 
@@ -372,6 +394,10 @@ other mod. More detail in [tools/romhack/README.md](tools/romhack/README.md).
 
 Patch mods can contain the hack's and the original game's data, so **don't share patch mods you don't have the rights
 to**: make your own from your own ROMs.
+
+Known results for VPW64:
+
+- Untested so far: Star Trinket's English v1.77 beta translation (see the FAQ).
 
 ## Building
 
