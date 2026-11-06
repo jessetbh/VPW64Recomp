@@ -1050,12 +1050,13 @@ int main(int argc, char** argv) {
     // Register the game. The entry is stored in the global `supported_games` vector because
     // recompui's launcher reads supported_games[0] (e.g. default_launcher_init_callback) to
     // build the game-options menu; leaving it empty access-violates during boot.
-    // VPW64 (1997, WT's direct sibling) is expected to be Controller-Pak-only like WT,
-    // so the pak emulation shares the 32KB save buffer (WT's medium). VERIFY during
-    // bring-up: if VPW64 turns out to also use cart SRAM (like WM2000 did), flip this
-    // to true so pak writes get their own saves/<game id>.pak.bin ([wcw2k] si.cpp).
+    // VPW64 uses BOTH media (aki-roadmap#215): the first 0x5710 bytes of its save go to cart
+    // SRAM, the player records above that to a 41-page Controller Pak note ("NVPJ"). Sharing
+    // one buffer put the SRAM data where the pak's ID block belongs, so the game's pak init
+    // failed with PFS_ERR_ID_FATAL, it fell back to its Rumble Pak probe, and the note could
+    // never be created. The pak needs its own saves/<game id>.pak.bin ([wcw2k] si.cpp).
     extern bool wcw_pak_separate_backing;
-    wcw_pak_separate_backing = false;
+    wcw_pak_separate_backing = true;
 
     // Hardware-accurate osAiSetFrequency return (28800 -> 28805 via DAC quantization).
     // WM2000 sizes its audio-heap allocations from the return value; the unquantized
@@ -1072,10 +1073,9 @@ int main(int argc, char** argv) {
     game.game_id = u8"vpw.vpw64.jp";
     game.mod_game_id = "vpw64";
     game.thumbnail_bytes = std::span<const char>(icon_bytes);
-    // Sram = a 32 KB save buffer. WT precedent (VPW64 is its 1997 sibling): expected
-    // Controller-Pak-only, saving through si.cpp's pak emulation which shares this
-    // buffer (WT's medium). VERIFY during bring-up (Revenge: cart SRAM via osSramInit,
-    // PI base 0xA8000000; WM2000: SRAM + separate pak).
+    // Sram = a 32 KB save buffer, really cart SRAM here: func_80000A04 is osSramInit (PI handle
+    // base 0xA8000000) and func_800B5F9C does the osEPiStartDma reads and writes. Saves carry
+    // AKI's repeated "19 97 10 21" magic at offset 0 (same as Revenge).
     game.save_type = recomp::SaveType::Sram;
     game.is_enabled = true;
     // Must be SIGN-EXTENDED: entrypoint_address is a gpr (int64) and librecomp's MEM_*
